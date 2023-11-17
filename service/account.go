@@ -15,6 +15,6 @@ type AccountResponse struct {
 
 //go:generate mockgen -destination=../mock/mock_service/mock_account_service.go bank/service AccountService
 type AccountService interface {
-	NewAccount(int, NewAccountRequest) (*AccountResponse, error)
-	GetAccounts(int) ([]AccountResponse, error)
+	NewAccount(customerID int, request NewAccountRequest) (*AccountResponse, error)
+	GetAccounts(customerID int) ([]AccountResponse, error)
 }

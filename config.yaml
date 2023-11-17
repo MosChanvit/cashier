@@ -1,10 +1,10 @@
 app:
-  port: 8000
+  port: 80
 
 db:
   driver: "mysql"
-  host: "13.76.163.73"
+  host: "localhost"
   port: 3306
-  username: root
-  password: P@ssw0rd
-  database: banking
+  username: mos
+  password: root123
+  database: cashier

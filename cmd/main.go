@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
 	"github.com/jmoiron/sqlx"
 	"github.com/spf13/viper"
@@ -18,25 +19,20 @@ import (
 func main() {
 	initTimeZone()
 	initConfig()
+
 	db := initDatabase()
+	createTable(db)
 
-	customerRepositoryDB := repository.NewCustomerRepositoryDB(db)
-	customerService := service.NewCustomerService(customerRepositoryDB)
-	customerHandler := handler.NewCustomerHandler(customerService)
-
-	accountRepositoryDB := repository.NewAccountRepositoryDB(db)
-	accountService := service.NewAccountService(accountRepositoryDB)
-	accountHandler := handler.NewAccountHandler(accountService)
+	cashierRepositoryDB := repository.NewCashierRepositoryDB(db)
+	cashierService := service.NewCashierRepoService(cashierRepositoryDB)
+	cashierHandler := handler.NewCashierHandler(cashierService)
 
 	router := mux.NewRouter()
 
-	router.HandleFunc("/customers", customerHandler.GetCustomers).Methods(http.MethodGet)
-	router.HandleFunc("/customers/{customerID:[0-9]+}", customerHandler.GetCustomer).Methods(http.MethodGet)
+	router.HandleFunc("/cashiers", cashierHandler.GetCashiers).Methods(http.MethodGet)
+	router.HandleFunc("/cashier/{cashier:[0-9]+}", cashierHandler.GetCashier).Methods(http.MethodGet)
 
-	router.HandleFunc("/customers/{customerID:[0-9]+}/accounts", accountHandler.GetAccounts).Methods(http.MethodGet)
-	router.HandleFunc("/customers/{customerID:[0-9]+}/accounts", accountHandler.NewAccount).Methods(http.MethodPost)
-
-	logs.Info("Banking service started at port " + viper.GetString("app.port"))
+	logs.Info("Cashier service started at port " + viper.GetString("app.port"))
 	http.ListenAndServe(fmt.Sprintf(":%v", viper.GetInt("app.port")), router)
 }
 
@@ -71,8 +67,10 @@ func initDatabase() *sqlx.DB {
 		viper.GetInt("db.port"),
 		viper.GetString("db.database"),
 	)
+	fmt.Println(dsn)
 
-	db, err := sqlx.Open(viper.GetString("db.driver"), dsn)
+	fmt.Println(viper.GetString("db.driver"))
+	db, err := sqlx.Open("mysql", dsn)
 	if err != nil {
 		panic(err)
 	}
@@ -82,4 +80,52 @@ func initDatabase() *sqlx.DB {
 	db.SetMaxIdleConns(10)
 
 	return db
+}
+
+func createTable(db *sqlx.DB) {
+	// SQL statement to create the user table
+	createTableSQL := `
+	CREATE TABLE IF NOT EXISTS cashier (
+		id INT AUTO_INCREMENT PRIMARY KEY,
+		name varchar(250)  NOT NULL,
+		c1000 INT(100) NOT NULL,
+		c500 INT(100) NOT NULL,
+		c100 INT(100) NOT NULL,
+		c50 INT(100) NOT NULL,
+		c20 INT(100) NOT NULL,
+		c10 INT(100) NOT NULL,
+		c5 INT(100) NOT NULL,
+		c1 INT(100) NOT NULL,
+		c025 INT(100) NOT NULL
+	);`
+
+	// Execute the SQL statement
+	_, err := db.Exec(createTableSQL)
+	if err != nil {
+		panic(err)
+	}
+
+	createTableSQL = `
+	CREATE TABLE IF NOT EXISTS shopping_list (
+		id INT AUTO_INCREMENT PRIMARY KEY,
+		c1000 INT(100) NOT NULL,
+		c500 INT(100) NOT NULL,
+		c100 INT(100) NOT NULL,
+		c50 INT(100) NOT NULL,
+		c20 INT(100) NOT NULL,
+		c10 INT(100) NOT NULL,
+		c5 INT(100) NOT NULL,
+		c1 INT(100) NOT NULL,
+		c025 INT(100) NOT NULL,
+		product_price FLOAT(24) NOT NULL,
+		customer_paid FLOAT(24) NOT NULL,
+		customer_change  FLOAT(24) NOT NULL,
+		cashier_id INT NOT NULL
+	);`
+	// Execute the SQL statement
+	_, err = db.Exec(createTableSQL)
+	if err != nil {
+		panic(err)
+	}
+	logs.Info("Table cashier & shopping_list Ready to use")
 }
