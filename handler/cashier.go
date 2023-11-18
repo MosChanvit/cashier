@@ -6,19 +6,19 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/gorilla/mux"
+	"github.com/labstack/echo"
 )
 
 type cashierHandler struct {
-	custSrv service.CashierService
+	castSrv service.CashierService
 }
 
-func NewCashierHandler(custSrv service.CashierService) cashierHandler {
-	return cashierHandler{custSrv: custSrv}
+func NewCashierHandler(castSrv service.CashierService) cashierHandler {
+	return cashierHandler{castSrv: castSrv}
 }
 
 func (h cashierHandler) GetCashiers(w http.ResponseWriter, r *http.Request) {
-	cashiers, err := h.custSrv.GetCashiers()
+	cashiers, err := h.castSrv.GetCashiers()
 	if err != nil {
 		handleError(w, err)
 		return
@@ -28,15 +28,32 @@ func (h cashierHandler) GetCashiers(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(cashiers)
 }
 
-func (h cashierHandler) GetCashier(w http.ResponseWriter, r *http.Request) {
-	cashierID, _ := strconv.Atoi(mux.Vars(r)["cashierID"])
+// func (h cashierHandler) GetCashier(w http.ResponseWriter, r *http.Request) {
+// 	cashierID, _ := strconv.Atoi(mux.Vars(r)["cashierID"])
 
-	cashier, err := h.custSrv.GetCashier(cashierID)
+// 	cashier, err := h.castSrv.GetCashier(cashierID)
+// 	if err != nil {
+// 		handleError(w, err)
+// 		return
+// 	}
+
+// 	w.Header().Set("content-type", "application/json")
+// 	json.NewEncoder(w).Encode(cashier)
+// }
+
+// TransferConfirm implements handlers.API
+func (s cashierHandler) GetCashier(c echo.Context) error {
+
+	id := c.Param("id")
+	idReq, err := strconv.Atoi(id)
 	if err != nil {
-		handleError(w, err)
-		return
+		return err
+	}
+	res, err := s.castSrv.GetCashier(idReq)
+	if err != nil {
+		return c.JSONPretty(http.StatusOK, res, "")
 	}
 
-	w.Header().Set("content-type", "application/json")
-	json.NewEncoder(w).Encode(cashier)
+	return c.JSONPretty(http.StatusOK, res, "")
+
 }

@@ -4,7 +4,13 @@ import (
 	"cashier/errs"
 	"fmt"
 	"net/http"
+
+	"github.com/labstack/echo"
 )
+
+type API interface {
+	GetCashier(c echo.Context) error
+}
 
 func handleError(w http.ResponseWriter, err error) {
 	switch e := err.(type) {

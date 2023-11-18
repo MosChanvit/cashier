@@ -19,4 +19,5 @@ type CashierRepository interface {
 	// Create(Account) (*Account, error)
 	GetAll() ([]Cashier, error)
 	GetById(int) (*Cashier, error)
+	Create(Cashier) (*Cashier, error)
 }
