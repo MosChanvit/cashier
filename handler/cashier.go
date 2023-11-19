@@ -1,8 +1,8 @@
 package handler
 
 import (
+	"cashier/logs"
 	"cashier/service"
-	"encoding/json"
 	"net/http"
 	"strconv"
 
@@ -13,44 +13,54 @@ type cashierHandler struct {
 	castSrv service.CashierService
 }
 
-func NewCashierHandler(castSrv service.CashierService) cashierHandler {
+func NewCashierHandler(castSrv service.CashierService) Handler {
 	return cashierHandler{castSrv: castSrv}
 }
 
-func (h cashierHandler) GetCashiers(w http.ResponseWriter, r *http.Request) {
-	cashiers, err := h.castSrv.GetCashiers()
+func (s cashierHandler) GetCashiers(c echo.Context) error {
+
+	res, err := s.castSrv.GetCashiers()
 	if err != nil {
-		handleError(w, err)
-		return
+		logs.Error(err)
+		return c.JSONPretty(http.StatusOK, res, "")
 	}
 
-	w.Header().Set("content-type", "application/json")
-	json.NewEncoder(w).Encode(cashiers)
+	return c.JSONPretty(http.StatusOK, res, "")
+
 }
 
-// func (h cashierHandler) GetCashier(w http.ResponseWriter, r *http.Request) {
-// 	cashierID, _ := strconv.Atoi(mux.Vars(r)["cashierID"])
-
-// 	cashier, err := h.castSrv.GetCashier(cashierID)
-// 	if err != nil {
-// 		handleError(w, err)
-// 		return
-// 	}
-
-// 	w.Header().Set("content-type", "application/json")
-// 	json.NewEncoder(w).Encode(cashier)
-// }
-
-// TransferConfirm implements handlers.API
 func (s cashierHandler) GetCashier(c echo.Context) error {
 
-	id := c.Param("id")
+	id := c.QueryParam(`id`)
 	idReq, err := strconv.Atoi(id)
 	if err != nil {
+		logs.Error(err)
 		return err
 	}
 	res, err := s.castSrv.GetCashier(idReq)
 	if err != nil {
+		logs.Error(err)
+		return c.JSONPretty(http.StatusNoContent, err, "")
+	}
+
+	return c.JSONPretty(http.StatusOK, res, "")
+
+}
+
+func (s cashierHandler) NewCashier(c echo.Context) error {
+
+	req := service.NewCashierRequest{}
+	if err := c.Bind(&req); err != nil {
+		return err
+	}
+
+	if req.IdCashier == "" {
+		return c.JSONPretty(http.StatusBadRequest, "id_cashier is required", "")
+	}
+
+	res, err := s.castSrv.NewCashier(req)
+	if err != nil {
+		logs.Error(err)
 		return c.JSONPretty(http.StatusOK, res, "")
 	}
 

@@ -1,6 +1,10 @@
 package repository
 
-import "github.com/jmoiron/sqlx"
+import (
+	"cashier/logs"
+
+	"github.com/jmoiron/sqlx"
+)
 
 type cashierRepositoryDB struct {
 	db *sqlx.DB
@@ -14,6 +18,7 @@ func (r cashierRepositoryDB) GetAll() ([]Cashier, error) {
 	query := "select * from cashier"
 	err := r.db.Select(&cashier, query)
 	if err != nil {
+		logs.Error(err)
 		return nil, err
 	}
 	return cashier, nil
@@ -24,6 +29,7 @@ func (r cashierRepositoryDB) GetById(id int) (*Cashier, error) {
 	query := "select * from cashier where id =?"
 	err := r.db.Get(&cashier, query, id)
 	if err != nil {
+		logs.Error(err)
 		return nil, err
 	}
 	return &cashier, nil
@@ -31,10 +37,11 @@ func (r cashierRepositoryDB) GetById(id int) (*Cashier, error) {
 
 func (r cashierRepositoryDB) Create(cas Cashier) (*Cashier, error) {
 	query := `INSERT INTO cashier.cashier
-	(name, c1000, c500, c100, c50, c20, c10, c5, c1, c025)
-	VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`
+	(id_cashier, name, c1000, c500, c100, c50, c20, c10, c5, c1, c025)
+	VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`
 	result, err := r.db.Exec(
 		query,
+		cas.IdCashier,
 		cas.Name,
 		cas.C1000,
 		cas.C500,
@@ -48,11 +55,13 @@ func (r cashierRepositoryDB) Create(cas Cashier) (*Cashier, error) {
 	)
 
 	if err != nil {
+		logs.Error(err)
 		return nil, err
 	}
 
 	id, err := result.LastInsertId()
 	if err != nil {
+		logs.Error(err)
 		return nil, err
 	}
 

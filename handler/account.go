@@ -1,58 +1,48 @@
 package handler
 
-import (
-	"cashier/errs"
-	"cashier/service"
-	"encoding/json"
-	"net/http"
-	"strconv"
+// type accountHandler struct {
+// 	accSrv service.AccountService
+// }
 
-	"github.com/gorilla/mux"
-)
+// func NewAccountHandler(accSrv service.AccountService) accountHandler {
+// 	return accountHandler{accSrv: accSrv}
+// }
 
-type accountHandler struct {
-	accSrv service.AccountService
-}
+// func (h accountHandler) NewAccount(w http.ResponseWriter, r *http.Request) {
+// 	customerID, _ := strconv.Atoi(mux.Vars(r)["customerID"])
 
-func NewAccountHandler(accSrv service.AccountService) accountHandler {
-	return accountHandler{accSrv: accSrv}
-}
+// 	if r.Header.Get("content-type") != "application/json" {
+// 		handleError(w, errs.NewValidationError("request body incorrect format"))
+// 		return
+// 	}
 
-func (h accountHandler) NewAccount(w http.ResponseWriter, r *http.Request) {
-	customerID, _ := strconv.Atoi(mux.Vars(r)["customerID"])
+// 	request := service.NewAccountRequest{}
+// 	err := json.NewDecoder(r.Body).Decode(&request)
+// 	if err != nil {
+// 		handleError(w, errs.NewValidationError("request body incorrect format"))
+// 		return
+// 	}
 
-	if r.Header.Get("content-type") != "application/json" {
-		handleError(w, errs.NewValidationError("request body incorrect format"))
-		return
-	}
+// 	response, err := h.accSrv.NewAccount(customerID, request)
+// 	if err != nil {
+// 		handleError(w, err)
+// 		return
+// 	}
 
-	request := service.NewAccountRequest{}
-	err := json.NewDecoder(r.Body).Decode(&request)
-	if err != nil {
-		handleError(w, errs.NewValidationError("request body incorrect format"))
-		return
-	}
+// 	w.WriteHeader(http.StatusCreated)
+// 	w.Header().Set("content-type", "applicaiton/json")
+// 	json.NewEncoder(w).Encode(response)
+// }
 
-	response, err := h.accSrv.NewAccount(customerID, request)
-	if err != nil {
-		handleError(w, err)
-		return
-	}
+// func (h accountHandler) GetAccounts(w http.ResponseWriter, r *http.Request) {
+// 	customerID, _ := strconv.Atoi(mux.Vars(r)["customerID"])
 
-	w.WriteHeader(http.StatusCreated)
-	w.Header().Set("content-type", "applicaiton/json")
-	json.NewEncoder(w).Encode(response)
-}
+// 	responses, err := h.accSrv.GetAccounts(customerID)
+// 	if err != nil {
+// 		handleError(w, err)
+// 		return
+// 	}
 
-func (h accountHandler) GetAccounts(w http.ResponseWriter, r *http.Request) {
-	customerID, _ := strconv.Atoi(mux.Vars(r)["customerID"])
-
-	responses, err := h.accSrv.GetAccounts(customerID)
-	if err != nil {
-		handleError(w, err)
-		return
-	}
-
-	w.Header().Set("content-type", "application/json")
-	json.NewEncoder(w).Encode(responses)
-}
+// 	w.Header().Set("content-type", "application/json")
+// 	json.NewEncoder(w).Encode(responses)
+// }
