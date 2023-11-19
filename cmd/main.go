@@ -145,6 +145,7 @@ func InitRouter(CashierSvc service.CashierService) *echo.Echo {
 	e.GET("/cashiers", handler.GetCashiers)
 	e.GET("/cashier", handler.GetCashier)
 	e.POST("/cashier", handler.NewCashier)
+	e.POST("/pay", handler.ProcessTransaction)
 
 	return e
 }

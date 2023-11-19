@@ -40,7 +40,7 @@ type ProcessTransactionRequest struct {
 	C5           int     `json:"c5"`
 	C1           int     `json:"c1"`
 	C025         int     `json:"c025"`
-	ProductPrice float64 `json:"productPrice"`
+	ProductPrice float64 `json:"product_price"`
 	CustomerPaid float64 `json:"customer_paid"`
 }
 type ProcessTransactionResponse struct {

@@ -67,3 +67,24 @@ func (s cashierHandler) NewCashier(c echo.Context) error {
 	return c.JSONPretty(http.StatusOK, res, "")
 
 }
+
+func (s cashierHandler) ProcessTransaction(c echo.Context) error {
+
+	req := service.ProcessTransactionRequest{}
+	if err := c.Bind(&req); err != nil {
+		return err
+	}
+
+	if req.IdCashier == "" {
+		return c.JSONPretty(http.StatusBadRequest, "id_cashier is required", "")
+	}
+
+	res, err := s.castSrv.ProcessTransaction(req)
+	if err != nil {
+		logs.Error(err)
+		return c.JSONPretty(http.StatusOK, res, "")
+	}
+
+	return c.JSONPretty(http.StatusOK, res, "")
+
+}

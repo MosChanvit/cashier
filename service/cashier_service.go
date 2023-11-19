@@ -6,7 +6,7 @@ import (
 	"cashier/repository"
 	"database/sql"
 	"fmt"
-	"strconv"
+	"log"
 )
 
 type cashierService struct {
@@ -141,17 +141,28 @@ func (s cashierService) ProcessTransaction(req ProcessTransactionRequest) (*Proc
 		1:    cashier.C5,
 		0.25: cashier.C025,
 	}
-
+	log.Println(Notes)
 	// return changeNotes
 
-	customerNotes := make(map[float64]int)
-	for _, denomination := range []float64{1000, 500, 100, 50, 20, 10, 5, 1, 0.25} {
-		numNotes, err := strconv.Atoi(fmt.Sprintf("note_%s", strconv.FormatFloat(denomination, 'f', -1, 64)))
-		if err != nil {
-			return nil, nil
-		}
-		customerNotes[denomination] = numNotes
+	customerNotes := map[float64]int{
+		1000: cashier.C1000,
+		500:  cashier.C500,
+		100:  req.C100,
+		50:   req.C50,
+		20:   cashier.C20,
+		10:   cashier.C10,
+		5:    cashier.C5,
+		1:    cashier.C5,
+		0.25: cashier.C025,
 	}
+	// for _, denomination := range []float64{1000, 500, 100, 50, 20, 10, 5, 1, 0.25} {
+	// 	numNotes, err := strconv.Atoi(fmt.Sprintf("note_%s", strconv.FormatFloat(denomination, 'f', -1, 64)))
+	// 	if err != nil {
+	// 		logs.Error(err)
+	// 		return nil, nil
+	// 	}
+	// 	customerNotes[denomination] = numNotes
+	// }
 
 	// Process the transaction
 
@@ -182,11 +193,14 @@ func (s cashierService) ProcessTransaction(req ProcessTransactionRequest) (*Proc
 	for note, numNotes := range Notes {
 		fmt.Printf("$%.2f: %d notes/coins\n", note, numNotes)
 	}
+	log.Println(change)
 
 	//Validate
 	response := ProcessTransactionResponse{
 		CustomerChange: change,
 	}
+	log.Println(response)
+
 	return &response, nil
 }
 
