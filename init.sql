@@ -1,6 +1,5 @@
 CREATE TABLE IF NOT EXISTS cashier (
 		id INT AUTO_INCREMENT PRIMARY KEY,
-		id_cashier varchar(250)  NOT NULL,
 		name varchar(250)  NOT NULL,
 		c1000 INT(100) NOT NULL,
 		c500 INT(100) NOT NULL,
@@ -32,5 +31,5 @@ CREATE TABLE IF NOT EXISTS shopping_list (
 
 
 
-INSERT INTO cashier.cashier (id_cashier,name,c1000,c500,c100,c50,c20,c10,c5,c1,c025) 
-VALUES('Ja001','Ja',10,20,30,40,50,60,70,80,90),('Mo001','mo',10,20,30,40,50,60,70,80,90);
+INSERT INTO cashier.cashier (name,c1000,c500,c100,c50,c20,c10,c5,c1,c025) 
+VALUES('Cj005',10,20,30,40,50,60,70,80,90),('top001',10,20,30,40,50,60,70,80,90);

@@ -33,6 +33,21 @@ func main() {
 	run(ctx, e)
 }
 
+func InitRouter(CashierSvc service.CashierService) *echo.Echo {
+	// init echo
+	e := echo.New()
+
+	handler := handler.NewCashierHandler(CashierSvc)
+	e.GET("/health", healthCheck) // health check
+	e.GET("/cashiers", handler.GetCashiers)
+	e.GET("/cashier", handler.GetCashier)
+	e.POST("/cashier", handler.NewCashier)
+	e.POST("/pay", handler.ProcessTransaction)
+	e.POST("/cal_value", handler.CalValue)
+
+	return e
+}
+
 func run(ctx context.Context, e *echo.Echo) {
 	serverPort := fmt.Sprintf(":%v", viper.GetString("app.port"))
 	if err := e.Start(serverPort); err != nil {
@@ -132,21 +147,6 @@ func createTable(db *sqlx.DB) {
 		panic(err)
 	}
 	logs.Info("Table cashier & shopping_list Ready to use")
-}
-
-func InitRouter(CashierSvc service.CashierService) *echo.Echo {
-	// init echo
-	e := echo.New()
-
-	handler := handler.NewCashierHandler(CashierSvc)
-	e.GET("/health", healthCheck) // health check
-	e.GET("/cashiers", handler.GetCashiers)
-	e.GET("/cashier", handler.GetCashier)
-	e.POST("/cashier", handler.NewCashier)
-	e.POST("/pay1", handler.ProcessTransaction)
-	e.POST("/cal_value", handler.CalValue)
-
-	return e
 }
 
 func healthCheck(c echo.Context) error {

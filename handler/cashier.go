@@ -3,6 +3,7 @@ package handler
 import (
 	"cashier/logs"
 	"cashier/service"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"strings"
@@ -32,13 +33,13 @@ func (s cashierHandler) GetCashiers(c echo.Context) error {
 
 func (s cashierHandler) GetCashier(c echo.Context) error {
 
-	id := c.QueryParam(`id_cashier`)
+	name := c.QueryParam(`name`)
 
-	if id == "" {
-		return c.JSONPretty(http.StatusBadRequest, "required id_cashier", "")
+	if name == "" {
+		return c.JSONPretty(http.StatusBadRequest, "required name", "")
 	}
 
-	res, err := s.castSrv.GetCashier(id)
+	res, err := s.castSrv.GetCashier(name)
 	if err != nil {
 		logs.Error(err)
 		return c.JSONPretty(http.StatusBadRequest, err, "")
@@ -55,7 +56,7 @@ func (s cashierHandler) NewCashier(c echo.Context) error {
 		return err
 	}
 
-	if req.IdCashier == "" {
+	if req.Name == "" {
 		return c.JSONPretty(http.StatusBadRequest, "id_cashier is required", "")
 	}
 
@@ -76,7 +77,10 @@ func (s cashierHandler) ProcessTransaction(c echo.Context) error {
 		return err
 	}
 
-	if req.IdCashier == "" {
+	res2B, _ := json.Marshal(req)
+	fmt.Println(string(res2B))
+
+	if req.Name == "" {
 		return c.JSONPretty(http.StatusBadRequest, "id_cashier is required", "")
 	}
 
