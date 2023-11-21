@@ -32,7 +32,7 @@
     note--> The rusults are at terminal log
 
 6. Test API 2 whit curl
-    * api create cashier
+    1. api create cashier
     curl --location 'http://localhost:80/cashier' \
     --header 'Content-Type: application/json' \
     --data '{
