@@ -3,8 +3,9 @@ package handler
 import (
 	"cashier/logs"
 	"cashier/service"
+	"fmt"
 	"net/http"
-	"strconv"
+	"strings"
 
 	"github.com/labstack/echo"
 )
@@ -22,7 +23,7 @@ func (s cashierHandler) GetCashiers(c echo.Context) error {
 	res, err := s.castSrv.GetCashiers()
 	if err != nil {
 		logs.Error(err)
-		return c.JSONPretty(http.StatusOK, res, "")
+		return c.JSONPretty(http.StatusBadRequest, err, "")
 	}
 
 	return c.JSONPretty(http.StatusOK, res, "")
@@ -31,16 +32,16 @@ func (s cashierHandler) GetCashiers(c echo.Context) error {
 
 func (s cashierHandler) GetCashier(c echo.Context) error {
 
-	id := c.QueryParam(`id`)
-	idReq, err := strconv.Atoi(id)
-	if err != nil {
-		logs.Error(err)
-		return err
+	id := c.QueryParam(`id_cashier`)
+
+	if id == "" {
+		return c.JSONPretty(http.StatusBadRequest, "required id_cashier", "")
 	}
-	res, err := s.castSrv.GetCashier(idReq)
+
+	res, err := s.castSrv.GetCashier(id)
 	if err != nil {
 		logs.Error(err)
-		return c.JSONPretty(http.StatusNoContent, err, "")
+		return c.JSONPretty(http.StatusBadRequest, err, "")
 	}
 
 	return c.JSONPretty(http.StatusOK, res, "")
@@ -61,7 +62,7 @@ func (s cashierHandler) NewCashier(c echo.Context) error {
 	res, err := s.castSrv.NewCashier(req)
 	if err != nil {
 		logs.Error(err)
-		return c.JSONPretty(http.StatusOK, res, "")
+		return c.JSONPretty(http.StatusBadRequest, err, "")
 	}
 
 	return c.JSONPretty(http.StatusOK, res, "")
@@ -80,6 +81,37 @@ func (s cashierHandler) ProcessTransaction(c echo.Context) error {
 	}
 
 	res, err := s.castSrv.ProcessTransaction(req)
+	if err != nil {
+		logs.Error(err)
+		return c.JSONPretty(http.StatusOK, err, "")
+	}
+
+	return c.JSONPretty(http.StatusOK, res, "")
+
+}
+
+func (s cashierHandler) CalValue(c echo.Context) error {
+
+	rawNumbers := c.QueryParams().Get("numbers")
+	fmt.Println(rawNumbers)
+	values := strings.Split(rawNumbers, ",")
+
+	// var numbers []string
+	// for _, rawNumber := range values {
+	// 	fmt.Println(string(rawNumber))
+
+	// 	number, _ := strconv.Atoi(string(rawNumber))
+	// 	// if err != nil {
+	// 	// 	fmt.Println(err)
+
+	// 	// 	return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid number format"})
+	// 	// }
+	// 	numbers = append(numbers, number)
+	// }
+
+	fmt.Println(values)
+
+	res, err := s.castSrv.CalValue(values)
 	if err != nil {
 		logs.Error(err)
 		return c.JSONPretty(http.StatusOK, res, "")

@@ -34,9 +34,8 @@ func main() {
 }
 
 func run(ctx context.Context, e *echo.Echo) {
-	serverPort := fmt.Sprintf(":%v", 80)
+	serverPort := fmt.Sprintf(":%v", viper.GetString("app.port"))
 	if err := e.Start(serverPort); err != nil {
-		// logger.Fatal(ctx, "shutting down the server")
 		e.Logger.Fatal(ctx, "shutting down the server")
 	}
 
@@ -145,11 +144,67 @@ func InitRouter(CashierSvc service.CashierService) *echo.Echo {
 	e.GET("/cashiers", handler.GetCashiers)
 	e.GET("/cashier", handler.GetCashier)
 	e.POST("/cashier", handler.NewCashier)
-	e.POST("/pay", handler.ProcessTransaction)
+	e.POST("/pay1", handler.ProcessTransaction)
+	e.POST("/cal_value", handler.CalValue)
 
 	return e
 }
 
 func healthCheck(c echo.Context) error {
 	return c.JSONPretty(http.StatusOK, echo.Map{"message": "Service is Running !!"}, "	")
+}
+
+// ///////////////////////
+type Cashier struct {
+	Notes map[float64]int
+}
+
+// NewCashier initializes a new cashier instance.
+func NewCashier() *Cashier {
+	return &Cashier{
+		Notes: map[float64]int{
+			1000: 10,
+			500:  20,
+			100:  15,
+			50:   20,
+			20:   30,
+			10:   20,
+			5:    20,
+			1:    20,
+			0.25: 50,
+		},
+	}
+}
+
+// ProcessTransaction calculates the change and displays the remaining notes/coins.
+func (c *Cashier) ProcessTransaction(productPrice, customerPaid float64, customerNotes map[float64]int) map[float64]int {
+	// Add the customer's notes to the cashier's desk
+	for note, numNotes := range customerNotes {
+		c.Notes[note] += numNotes
+	}
+
+	// Calculate change
+	change := customerPaid - productPrice
+	changeNotes := make(map[float64]int)
+
+	for note, limit := range c.Notes {
+		if change >= note {
+			numNotes := int(change / note)
+			if numNotes > limit {
+				numNotes = limit
+			}
+
+			changeNotes[note] = numNotes
+			change -= float64(numNotes) * note
+			c.Notes[note] -= numNotes
+		}
+	}
+
+	// Display remaining notes/coins
+	fmt.Println("\nRemaining Notes/Coins:")
+	for note, numNotes := range c.Notes {
+		fmt.Printf("$%.2f: %d notes/coins\n", note, numNotes)
+	}
+
+	return changeNotes
 }
