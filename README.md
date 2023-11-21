@@ -8,31 +8,31 @@
 
 1. Clone this repository:
 
-   git clone https://github.com/MosChanvit/cashier.git
+   $ git clone https://github.com/MosChanvit/cashier.git
 
 2. up: docker compose up:
 
-   docker-compose up -d
+   $ docker-compose up -d
 
 3. create:  module service cashier :
 
-   go mod init cashier
+   $ go mod init cashier
 
 4. tidy: special go mod tidy without golang 
 
-    go mod tidy
+    $ go mod tidy
 
 5. run service  
-    go run cmd/main.go
+   $ go run cmd/main.go
 
 6. Test API 1 whit curl
-    --api cal_xyz
+    * api cal_xyz
     curl --location --request POST 'http://localhost:80/cal_xyz?numbers=1%2CX%2C8%2C17%2CY%2CZ%2C78%2C113'
     
     note--> The rusults are at terminal log
 
 6. Test API 2 whit curl
-    -- api create cashier
+    * api create cashier
     curl --location 'http://localhost:80/cashier' \
     --header 'Content-Type: application/json' \
     --data '{
@@ -53,15 +53,15 @@
     -"c1000": 5   means there are 5 1,000 baht bills
 
 
-    -- api Get cashier by name, Returns cashier information and payment transitions.
+    * api Get cashier by name, Returns cashier information and payment transitions.
     
     curl --location 'http://localhost:80/cashier?name=QC'
 
-    -- api Get cashier All, Returns cashier information all.
+    * api Get cashier All, Returns cashier information all.
     
     curl --location 'http://localhost:80/cashiers'
 
-    -- api calculate the change money when the customer pays
+    * api calculate the change money when the customer pays
 
     curl --location 'http://localhost:80/pay' \
     --header 'Content-Type: application/json' \
