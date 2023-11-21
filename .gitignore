@@ -21,3 +21,6 @@
 # Go workspace file
 go.work
 db-data/*
+
+go.mod
+go.sum
