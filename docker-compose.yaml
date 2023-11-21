@@ -4,7 +4,10 @@ services:
   # App backend se
 
   mysql:
-    build: .
+    # build: .
+    build: 
+      context: ./
+      dockerfile: MySqlDockerfile
     image: cashier-db:1.0.0
     container_name: mysql_container
     environment:
@@ -13,16 +16,11 @@ services:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
-      - ./db-data:/var/lib/mysql
+      # - db-data
+      - db-data:/var/lib/mysql
     ports:
       - "3306:3306"
     tty: true
    
-# Volumes
-# volumes:
-#   db-data:
-
-
-# Networks to be created to facilitate communication between containers
-networks:
-  turingmysql:
+volumes:
+  db-data:

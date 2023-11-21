@@ -38,7 +38,6 @@ func run(ctx context.Context, e *echo.Echo) {
 	if err := e.Start(serverPort); err != nil {
 		e.Logger.Fatal(ctx, "shutting down the server")
 	}
-
 }
 
 func initConfig() {
