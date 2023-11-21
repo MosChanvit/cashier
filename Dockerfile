@@ -31,6 +31,8 @@ COPY --from=builder ./config.yaml .
 # RUN chmod +x /app/cmd/main
 
 
+
+
 EXPOSE 80
 
 CMD ["./main"]

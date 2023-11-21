@@ -3,13 +3,17 @@ version: '3.8'
 services:
   # App backend se
 
-  mysql:
-    # build: .
+
+# service name
+  mysql: 
     build: 
       context: ./
+      #build sql MySqlDockerfile create table
       dockerfile: MySqlDockerfile
+    #set  image name:tag
     image: cashier-db:1.0.0
     container_name: mysql_container
+    # load  environment from file .env
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
