@@ -27,7 +27,7 @@ RUN apk add --no-cache ca-certificates tzdata libc6-compat
 
 COPY --from=builder /app/main .
 
-COPY --from=builder ./config.yaml .
+COPY --from=builder /app/config.yaml .
 # RUN chmod +x /app/cmd/main
 
 

@@ -18,8 +18,8 @@ func NewCashierRepoService(casRepo repository.CashierRepository) CashierService 
 	return cashierService{casRepo: casRepo}
 }
 
-func (s cashierService) GetCashier(IdCashier string) (*CashierResponse, error) {
-	cashier, err := s.casRepo.GetByNameCashier(IdCashier)
+func (s cashierService) GetCashier(name string) (*CashierResponse, error) {
+	cashier, err := s.casRepo.GetByNameCashier(name)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, err
@@ -154,6 +154,7 @@ func (s cashierService) ProcessTransaction(req ProcessTransactionRequest) (*Proc
 	}
 
 	change := req.CustomerPaid - req.ProductPrice
+
 	changeNotes := make(map[float64]int)
 
 	cashierSum := repository.Cashier{
@@ -269,30 +270,40 @@ func (s cashierService) ProcessTransaction(req ProcessTransactionRequest) (*Proc
 	return &response, nil
 }
 
-func (s cashierService) CalValue(setStr []string) ([]string, error) {
+func (s cashierService) CalXYZ(setStr []string) error {
 
-	var numbers []int
-	for _, rawNumber := range setStr {
-		fmt.Println(string(rawNumber))
+	// var numbers []int
+	for i, rawNumber := range setStr {
+		// fmt.Println(string(rawNumber))
 
-		int, err := strconv.Atoi(string(rawNumber))
+		_, err := strconv.Atoi(string(rawNumber))
 		if err != nil {
-			fmt.Println(err)
+			fmt.Println(string(rawNumber), " has possible values ")
+
+			var numbers []int
+			i1, errBef := strconv.Atoi(string(setStr[i-1]))
+			i2, errAft := strconv.Atoi(string(setStr[i+1]))
+
+			if errBef == nil && errAft == nil {
+				for i := i1 + 1; i < i2; i++ {
+					numbers = append(numbers, i)
+				}
+			} else if errBef == nil && errAft != nil {
+				i3, _ := strconv.Atoi(string(setStr[i+2]))
+				for i := i1 + 1; i < i3-1; i++ {
+					numbers = append(numbers, i)
+				}
+			} else if errBef != nil && errAft == nil {
+
+				i3, _ := strconv.Atoi(string(setStr[i-2]))
+
+				for i := i3 + 2; i < i2; i++ {
+					numbers = append(numbers, i)
+				}
+			}
+			fmt.Println(numbers)
 		}
 
-		fmt.Println(string(rawNumber))
-
-		numbers = append(numbers, int)
 	}
-
-	for i, v := range numbers {
-		if v == 0 && numbers[i-1] != 0 && numbers[i+1] != 0 && numbers[i+2] != 0 {
-			g1 := numbers[i+1] - numbers[i-1]
-			g2 := numbers[i+2] - numbers[i+1]
-			fmt.Println(g2-g1, v)
-		}
-	}
-
-	log.Println(numbers)
-	return setStr, nil
+	return nil
 }

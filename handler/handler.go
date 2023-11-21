@@ -9,5 +9,5 @@ type Handler interface {
 	GetCashier(c echo.Context) error
 	NewCashier(c echo.Context) error
 	ProcessTransaction(c echo.Context) error
-	CalValue(c echo.Context) error
+	CalXYZ(c echo.Context) error
 }

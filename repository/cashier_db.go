@@ -25,10 +25,10 @@ func (r cashierRepositoryDB) GetAll() ([]Cashier, error) {
 	return cashier, nil
 }
 
-func (r cashierRepositoryDB) GetByNameCashier(idCashier string) (*Cashier, error) {
+func (r cashierRepositoryDB) GetByNameCashier(name string) (*Cashier, error) {
 	cashier := Cashier{}
-	query := "select * from cashier where id_cashier = ?"
-	err := r.db.Get(&cashier, query, idCashier)
+	query := "select * from cashier where name = ?"
+	err := r.db.Get(&cashier, query, name)
 	if err != nil {
 		logs.Error(err)
 		return nil, err

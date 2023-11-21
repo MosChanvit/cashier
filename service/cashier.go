@@ -79,5 +79,5 @@ type CashierService interface {
 	GetCashier(string) (*CashierResponse, error)
 	NewCashier(request NewCashierRequest) (*CashierAllResponse, error)
 	ProcessTransaction(request ProcessTransactionRequest) (*ProcessTransactionResponse, error)
-	CalValue(num []string) ([]string, error)
+	CalXYZ(num []string) error
 }

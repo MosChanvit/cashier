@@ -43,7 +43,7 @@ func InitRouter(CashierSvc service.CashierService) *echo.Echo {
 	e.GET("/cashier", handler.GetCashier)
 	e.POST("/cashier", handler.NewCashier)
 	e.POST("/pay", handler.ProcessTransaction)
-	e.POST("/cal_value", handler.CalValue)
+	e.POST("/cal_xyz", handler.CalXYZ)
 
 	return e
 }

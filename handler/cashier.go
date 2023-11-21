@@ -3,8 +3,6 @@ package handler
 import (
 	"cashier/logs"
 	"cashier/service"
-	"encoding/json"
-	"fmt"
 	"net/http"
 	"strings"
 
@@ -77,11 +75,13 @@ func (s cashierHandler) ProcessTransaction(c echo.Context) error {
 		return err
 	}
 
-	res2B, _ := json.Marshal(req)
-	fmt.Println(string(res2B))
-
 	if req.Name == "" {
 		return c.JSONPretty(http.StatusBadRequest, "id_cashier is required", "")
+	}
+
+	change := req.CustomerPaid - req.ProductPrice
+	if change < 0 {
+		return c.JSONPretty(http.StatusBadRequest, "Not paying enough for the product", "")
 	}
 
 	res, err := s.castSrv.ProcessTransaction(req)
@@ -94,33 +94,17 @@ func (s cashierHandler) ProcessTransaction(c echo.Context) error {
 
 }
 
-func (s cashierHandler) CalValue(c echo.Context) error {
+func (s cashierHandler) CalXYZ(c echo.Context) error {
 
 	rawNumbers := c.QueryParams().Get("numbers")
-	fmt.Println(rawNumbers)
 	values := strings.Split(rawNumbers, ",")
 
-	// var numbers []string
-	// for _, rawNumber := range values {
-	// 	fmt.Println(string(rawNumber))
-
-	// 	number, _ := strconv.Atoi(string(rawNumber))
-	// 	// if err != nil {
-	// 	// 	fmt.Println(err)
-
-	// 	// 	return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid number format"})
-	// 	// }
-	// 	numbers = append(numbers, number)
-	// }
-
-	fmt.Println(values)
-
-	res, err := s.castSrv.CalValue(values)
+	err := s.castSrv.CalXYZ(values)
 	if err != nil {
 		logs.Error(err)
-		return c.JSONPretty(http.StatusOK, res, "")
+		return c.JSONPretty(http.StatusOK, nil, "")
 	}
 
-	return c.JSONPretty(http.StatusOK, res, "")
+	return c.JSONPretty(http.StatusOK, nil, "")
 
 }
