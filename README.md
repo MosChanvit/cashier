@@ -19,7 +19,6 @@
     * api cal_xyz
     curl --location --request POST 'http://localhost:80/cal_xyz?numbers=1%2CX%2C8%2C17%2CY%2CZ%2C78%2C113'
     
-    note--> The rusults are at terminal log
 
 4. Test API 2 with curl
     * api create cashier
@@ -75,3 +74,5 @@
         -set "name" required
         -"c1000": 0   means there are 0 1,000 baht bills
         -product_price  = Set the customer_paid value to match the amount information entered.
+
+

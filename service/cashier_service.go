@@ -270,8 +270,8 @@ func (s cashierService) ProcessTransaction(req ProcessTransactionRequest) (*Proc
 	return &response, nil
 }
 
-func (s cashierService) CalXYZ(setStr []string) error {
-
+func (s cashierService) CalXYZ(setStr []string) string {
+	res := ""
 	// var numbers []int
 	for i, rawNumber := range setStr {
 		// fmt.Println(string(rawNumber))
@@ -279,6 +279,7 @@ func (s cashierService) CalXYZ(setStr []string) error {
 		_, err := strconv.Atoi(string(rawNumber))
 		if err != nil {
 			fmt.Println(string(rawNumber), " has possible values ")
+			res += string(rawNumber) + " has possible values \n"
 
 			var numbers []int
 			i1, errBef := strconv.Atoi(string(setStr[i-1]))
@@ -301,9 +302,14 @@ func (s cashierService) CalXYZ(setStr []string) error {
 					numbers = append(numbers, i)
 				}
 			}
-			fmt.Println(numbers)
+
+			for _, v := range numbers {
+				num := strconv.Itoa(v)
+				res += num + ", "
+			}
+			res += "\n"
 		}
 
 	}
-	return nil
+	return res
 }

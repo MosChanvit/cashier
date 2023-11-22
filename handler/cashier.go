@@ -99,12 +99,12 @@ func (s cashierHandler) CalXYZ(c echo.Context) error {
 	rawNumbers := c.QueryParams().Get("numbers")
 	values := strings.Split(rawNumbers, ",")
 
-	err := s.castSrv.CalXYZ(values)
-	if err != nil {
-		logs.Error(err)
-		return c.JSONPretty(http.StatusOK, nil, "")
-	}
+	res := s.castSrv.CalXYZ(values)
+	// if err != nil {
+	// 	logs.Error(err)
+	// 	return c.JSONPretty(http.StatusOK, nil, "")
+	// }
 
-	return c.JSONPretty(http.StatusOK, nil, "")
+	return c.String(http.StatusOK, res)
 
 }
