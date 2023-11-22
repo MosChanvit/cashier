@@ -14,31 +14,21 @@
 
    $ docker-compose up -d
 
-3. create:  module service cashier :
 
-   $ go mod init cashier
-
-4. tidy: special go mod tidy without golang 
-
-    $ go mod tidy
-
-5. run service  
-   $ go run cmd/main.go
-
-6. Test API 1 whit curl
+3. Test API 1 with curl
     * api cal_xyz
     curl --location --request POST 'http://localhost:80/cal_xyz?numbers=1%2CX%2C8%2C17%2CY%2CZ%2C78%2C113'
     
     note--> The rusults are at terminal log
 
-6. Test API 2 whit curl
+4. Test API 2 with curl
     * api create cashier
     
         curl --location 'http://localhost:80/cashier' \
         --header 'Content-Type: application/json' \
         --data '{
             "name": "QC",
-            "c1000": 5,
+            "c1000": 10,
             "c500": 5,
             "c100": 5,
             "c50": 5,
@@ -68,7 +58,7 @@
         --header 'Content-Type: application/json' \
         --data '{
             "name": "QC",
-            "c1000": 0,
+            "c1000": 1,
             "c500": 0,
             "c100": 1,
             "c50": 0,
@@ -78,7 +68,7 @@
             "c1": 0,
             "c025": 0,
             "product_price": 1090,
-            "customer_paid":140
+            "customer_paid":1140
         }'
 
         note--> 

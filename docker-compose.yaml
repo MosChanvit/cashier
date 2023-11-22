@@ -1,26 +1,30 @@
 version: '3.8'
 
 services:
-  # App backend se
-
-
-# service name
-  mysql: 
+  cashier:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: cashier-service:1.0.0
+    container_name: cashier-service
+    ports:
+      - "80:80"
+    restart: on-failure:10
+    depends_on:
+      - mysql-cashier
+      
+  mysql-cashier: 
     build: 
       context: ./
-      #build sql MySqlDockerfile create table
       dockerfile: MySqlDockerfile
-    #set  image name:tag
     image: cashier-db:1.0.0
     container_name: mysql_container
-    # load  environment from file .env
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
-      # - db-data
       - db-data:/var/lib/mysql
     ports:
       - "3306:3306"

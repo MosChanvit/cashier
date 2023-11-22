@@ -3,7 +3,7 @@ app:
 
 db:
   driver: "mysql"
-  host: "localhost"
+  host: "mysql-cashier"
   port: 3306
   username: mos
   password: root123
