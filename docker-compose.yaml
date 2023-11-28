@@ -1,14 +1,21 @@
 version: '3.8'
 
 services:
+  gateway:
+    image: nginx:1.25.2-alpine
+    container_name: gateway-cashier-service
+    restart: always
+    ports: 
+      - "80:80"
+      - "443:443"
   cashier:
     build:
       context: ./
       dockerfile: Dockerfile
     image: cashier-service:1.0.0
     container_name: cashier-service
-    ports:
-      - "80:80"
+    # ports:
+    #   - "80:80"
     restart: on-failure:10
     depends_on:
       - mysql-cashier
