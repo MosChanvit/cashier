@@ -5,14 +5,16 @@
 
 This project follows the hexagonal architecture pattern.
 
+```plaintext
+
 /cmd
     main.go           # Application entry point
 /handler              # HTTP request handlers
 /log                  # set Logger
 /repository           # Interfaces for data storage & adapter sevice external
-/service              #Business 
+/service              #Business logic services
 
-
+```
 
 ## Setup
 
